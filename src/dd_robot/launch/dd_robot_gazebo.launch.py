@@ -16,7 +16,7 @@ def generate_launch_description():
 
     # Start Ignition Gazebo with the world
     ign_gazebo = ExecuteProcess(
-        cmd=['ign', 'gazebo', world_path, '--render-engine', 'ogre', '--verbose', '-r'],  # -r to auto-start simulation
+        cmd=['ign', 'gazebo', world_path, '--render-engine', 'ogre2', '--verbose', '-r'],  # -r to auto-start simulation
         output='screen'
     )
 
@@ -26,7 +26,10 @@ def generate_launch_description():
         executable='robot_state_publisher',
         parameters=[{'robot_description': robot_description,
                      'use_sim_time': True}],
-        output='screen'
+        output='screen',
+        additional_env={
+            '__NV_PRIME_RENDER_OFFLOAD': '1'
+        }
     )
 
     # Spawn robot into Ignition using the /create service
