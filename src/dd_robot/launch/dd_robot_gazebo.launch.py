@@ -36,6 +36,78 @@ def generate_launch_description():
         }
     )
 
+    bridges = [
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='laser_bridge',
+            arguments=['/scan@sensor_msgs/msg/LaserScan@ignition.msgs.LaserScan'],
+            output='screen'
+        ),
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='camera_bridge',
+            arguments=['/camera/image_raw@sensor_msgs/msg/Image@ignition.msgs.Image'],
+            output='screen'
+        ),
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='velocity_bridge',
+            arguments=[
+                '/model/ddrobot/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist'],
+            output='screen'
+        ),
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='joint_state_bridge',
+            arguments=[
+                '/world/car_world/model/ddrobot/joint_state@sensor_msgs/msg/JointState@ignition.msgs.Model',
+                '--ros-args', '--remap', '/world/car_world/model/ddrobot/joint_state:=/joint_states'
+            ],
+            output='screen'
+        ),
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='imu_bridge',
+            arguments=['/imu@sensor_msgs/msg/Imu@ignition.msgs.IMU'],
+            output='screen'
+        ),
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            arguments=[
+                '/model/ddrobot/odometry@nav_msgs/msg/Odometry[ignition.msgs.Odometry',
+                '--ros-args', '-r', '/model/ddrobot/odometry:=/odom'
+            ],
+            output='screen'
+        )
+    ]
+
+    tf_nodes = [
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'ddrobot/odom'],
+            output='screen'
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'ddrobot/base_link/lidar'],
+            output='screen'
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'ddrobot/base_link/camera'],
+            output='screen'
+        )
+    ]
+    
     # Spawn robot into Ignition using the /create service
     spawn_robot = Node(
         package='ros_gz_sim',
@@ -48,9 +120,7 @@ def generate_launch_description():
     return LaunchDescription([
         ign_gazebo,
         robot_state_publisher,
-        TimerAction(
-            period=0.5,
-            actions=[spawn_robot]
-        )
-
+        spawn_robot,
+        *bridges,
+        *tf_nodes
     ])

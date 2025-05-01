@@ -176,12 +176,6 @@
       <right_joint>joint_right_wheel</right_joint>
       <wheel_separation>${2 * wheel_offset_y}</wheel_separation>
       <wheel_radius>${wheel_radius}</wheel_radius>
-      <odom_publish>true</odom_publish>
-      <odom_publish_frequency>1</odom_publish_frequency>
-      <max_velocity>5.0</max_velocity>
-      <min_velocity>-5.0</min_velocity>
-      <max_acceleration>20.0</max_acceleration>
-      <min_acceleration>-20.0</min_acceleration>
     </plugin>
   </gazebo>
 
@@ -190,7 +184,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.02"/>
+        <cylinder radius="0.05" length="0.08"/>
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/>
@@ -199,7 +193,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.02"/>
+        <cylinder radius="0.05" length="0.08"/>
       </geometry>
     </collision>
     <inertial>
@@ -212,7 +206,7 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_link"/>
-    <origin xyz="0 0 0.205" rpy="0 0 0"/>
+    <origin xyz="0 0 0.165" rpy="0 0 0"/>
   </joint>
 
   <!-- Camera Link -->
@@ -250,10 +244,15 @@
     <plugin name="ignition::gazebo::systems::Sensors" filename="libignition-gazebo-sensors-system.so"/>
   </gazebo>
 
+  <gazebo>
+    <plugin name="ignition::gazebo::systems::JointStatePublisher" filename="libignition-gazebo-joint-state-publisher-system.so"/>
+  </gazebo>
+
+
   <!-- Sensor block -->
   <gazebo reference="lidar_link">
     <sensor name="lidar" type="gpu_lidar">
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0.04 0 0 0</pose>
       <update_rate>10</update_rate>
       <topic>scan</topic>
       <frame_name>lidar_link</frame_name>
@@ -309,5 +308,62 @@
     </sensor>
   </gazebo>
 
+  <!-- Gazebo plugin for IMU -->
+  <gazebo>
+    <plugin name="ignition::gazebo::systems::Imu" filename="libignition-gazebo-imu-system.so"/>
+  </gazebo>
 
+  <!-- IMU Link -->
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+
+  <!-- Joint for IMU -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.215" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo plugin for IMU -->
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 0 0 0</pose>
+      <topic>/imu</topic>
+      <update_rate>100</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <imu>
+        <angular_velocity>
+          <x>true</x>
+          <y>true</y>
+          <z>true</z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>true</x>
+          <y>true</y>
+          <z>true</z>
+        </linear_acceleration>
+      </imu>
+      <frame_name>imu_link</frame_name>
+    </sensor>
+  </gazebo>
 </robot>
