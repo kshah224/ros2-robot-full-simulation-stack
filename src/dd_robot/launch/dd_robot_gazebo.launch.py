@@ -4,11 +4,12 @@ from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 import xacro
+from launch.actions import TimerAction
 
 def generate_launch_description():
 
     pkg_name = 'dd_robot'
-    xacro_path = os.path.join(get_package_share_directory(pkg_name), 'urdf/dd_robot2.urdf')
+    xacro_path = os.path.join(get_package_share_directory(pkg_name), 'urdf/dd_robot.xacro')
     world_path = os.path.join(get_package_share_directory(pkg_name), 'worlds/empty_world.world')
 
     # Process xacro file
@@ -17,7 +18,10 @@ def generate_launch_description():
     # Start Ignition Gazebo with the world
     ign_gazebo = ExecuteProcess(
         cmd=['ign', 'gazebo', world_path, '--render-engine', 'ogre2', '--verbose', '-r'],  # -r to auto-start simulation
-        output='screen'
+        output='screen',
+        additional_env={
+            'LIBGL_ALWAYS_SOFTWARE': '1'
+        }
     )
 
     # Publish robot_description on topic
@@ -37,12 +41,16 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=['-name', 'ddrobot', '-topic', 'robot_description',
-                   '-x', '0', '-y', '0', '-z', '0.1'],
+                   '-x', '0', '-y', '0', '-z', '0.2'],
         output='screen'
     )
 
     return LaunchDescription([
         ign_gazebo,
         robot_state_publisher,
-        spawn_robot
+        TimerAction(
+            period=0.5,
+            actions=[spawn_robot]
+        )
+
     ])

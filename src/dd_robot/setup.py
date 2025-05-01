@@ -17,7 +17,7 @@ setup(
          glob(os.path.join('launch','*.launch.py'))),
 
         (os.path.join('share',package_name,'urdf'),
-         glob(os.path.join('urdf','*.urdf'))),
+        glob(os.path.join('urdf','*.urdf')) + glob(os.path.join('urdf','*.xacro'))),
 
          (os.path.join('share',package_name,'worlds'),
          glob(os.path.join('worlds','*.world'))),
