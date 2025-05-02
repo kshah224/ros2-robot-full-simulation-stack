@@ -4,6 +4,18 @@ from glob import glob
 
 package_name = 'dd_robot'
 
+def package_files(directory):
+    # Recursively collect all files under directory
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            filepath = os.path.join(path, filename)
+            install_path = os.path.join('share', package_name, path)
+            paths.append((install_path, [filepath]))
+    return paths
+
+model_files = package_files('models/TurtlebotArena')
+
 setup(
     name=package_name,
     version='0.0.0',
@@ -17,11 +29,12 @@ setup(
          glob(os.path.join('launch','*.launch.py'))),
 
         (os.path.join('share',package_name,'urdf'),
-        glob(os.path.join('urdf','*.urdf')) + glob(os.path.join('urdf','*.xacro'))),
+         glob(os.path.join('urdf','*.urdf')) + glob(os.path.join('urdf','*.xacro'))),
 
-         (os.path.join('share',package_name,'worlds'),
-         glob(os.path.join('worlds','*.world'))),
-    ],
+        (os.path.join('share',package_name,'world'),
+         glob(os.path.join('world','*.world')))
+    ] + model_files,
+    
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='kush',
