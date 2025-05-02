@@ -11,13 +11,12 @@ This repository contains a complete simulation stack for a differential drive mo
 - ✅ Odometry publication via `/odom`
 - ✅ Fully integrated Nav2 stack with SLAM and waypoint navigation
 
-## Timeline Breakdown
-|  | Deliverables |
-|------|--------------|
-| 1 | URDF modeling and link/joint validation |
-| 2 | Sensor integration and RViz visualization |
-| 3 | Ignition Gazebo simulation and spawner setup |
-| 4 | Nav2 integration and navigation testing |
+## Deliverables
+
+1. URDF modeling and link/joint validation 
+2. Sensor integration and RViz visualization 
+3. Ignition Gazebo simulation and spawner setup 
+4. Nav2 integration and navigation testing 
 
 ## Directory Structure
 ```
