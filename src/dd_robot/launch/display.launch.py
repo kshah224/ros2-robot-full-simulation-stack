@@ -40,8 +40,7 @@ def generate_launch_description():
     run_headless = LaunchConfiguration("run_headless")
     world_file_name = LaunchConfiguration("world_file")
     gz_models_path = ":".join([pkg_share, os.path.join(pkg_share, "models")])
-    print("gz_models_path: ", gz_models_path)
-    breakpoint()
+
     #gz_models_path = os.path.join(pkg_share, "models")
     world_path = PathJoinSubstitution([pkg_share, "world", world_file_name])
 

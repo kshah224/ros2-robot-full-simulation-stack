@@ -28,13 +28,17 @@ setup(
         (os.path.join('share',package_name,'launch'),
          glob(os.path.join('launch','*.launch.py'))),
 
+        (os.path.join('share',package_name,'config'),
+         glob(os.path.join('config','*.yaml'))),
+
         (os.path.join('share',package_name,'urdf'),
          glob(os.path.join('urdf','*.urdf')) + glob(os.path.join('urdf','*.xacro'))),
 
         (os.path.join('share',package_name,'world'),
          glob(os.path.join('world','*.world')))
+
     ] + model_files,
-    
+
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='kush',
@@ -42,8 +46,8 @@ setup(
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
-    entry_points={
-        'console_scripts': [
-        ],
-    },
+    scripts=[
+        'scripts/follow_waypoints.py',
+        'scripts/gotogoal.py',
+    ],
 )
